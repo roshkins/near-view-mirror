@@ -3,6 +3,11 @@
 
 <head>
     <title>Near View Mirror -- See a reflection of Near View calls</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css"
+        integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.min.js"
+        integrity="sha384-skAcpIdS7UcVUC05LJ9Dxay8AXcDYfBJqt1CJ85S/CFujBsIzCIv+l9liuYLaMQ/"
+        crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/near-api-js@0.42.0/dist/near-api-js.min.js"
         integrity="sha256-KPE7kGmIkBWfUxxi/Hb6+vz/y3etyrek8MUUKC7Wb4A=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/json-formatter-js@2.3.4/dist/json-formatter.umd.min.js"></script>
@@ -43,7 +48,7 @@
 
         function prettify() {
             try {
-                this.value = JSON.stringify(eval(`(${this.value})`) || {}, null, 4);
+                this.value = JSON.stringify(eval(`(${this.value})`) || ({}), null, 4);
             } catch (e) {
 
             }
