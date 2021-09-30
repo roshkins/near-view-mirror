@@ -1,0 +1,70 @@
+<!DOCTYPE HTML>
+<html lang="en" lang="en">
+
+<head>
+    <title>Near View Mirror -- See a reflection of Near View calls</title>
+    <script src="https://cdn.jsdelivr.net/npm/near-api-js@0.42.0/dist/near-api-js.min.js"
+        integrity="sha256-KPE7kGmIkBWfUxxi/Hb6+vz/y3etyrek8MUUKC7Wb4A=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/json-formatter-js@2.3.4/dist/json-formatter.umd.min.js"></script>
+</head>
+
+<body>
+    <script>
+        async function callView(network, contract, method, args) {
+            const config = {
+                networkId: network,
+                keyStore: new nearApi.keyStores.BrowserLocalStorageKeyStore(),
+                nodeUrl: `https://rpc.${network}.near.org`,
+                walletUrl: `https://wallet.${network}.near.org`,
+                helperUrl: `https://helper.${network}.near.org`,
+                explorerUrl: `https://explorer.${network}.near.org`,
+            };
+            const near = await nearApi.connect(config);
+            const wallet = new nearApi.WalletConnection(near);
+
+            const nearContract = new nearApi.Contract(
+                wallet.account(), // the account object that is connecting
+                contract,
+                {
+                    // name of contract you're connecting to
+                    viewMethods: [method], // view methods do not change state but usually return a value
+                }
+            );
+
+            const response = await nearContract[method](JSON.parse(args));
+            const formatter = new JSONFormatter(response);
+
+            document.body.appendChild(formatter.render());
+
+        }
+        function getVal(id) {
+            return document.getElementById(id).value;
+        }
+
+        function prettify() {
+            try {
+                this.value = JSON.stringify(JSON.parse(this.value), null, 4);
+            } catch (e) {
+
+            }
+        }
+    </script>
+
+    <form
+        onsubmit="(async (e) => {e.preventDefault(); await callView(getVal('network'), getVal('contract'), getVal('method'), getVal('args'));})(event)">
+        <label for="network">Network</label>
+        <select name="network" id="network">
+            <option value="mainnet">MainNet</option>
+            <option value="testnet">TestNet</option>
+        </select>
+        <label for="contract">Contract</label>
+        <input type="text" id="contract" name="contract" />
+        <label for="method">Method</label>
+        <input type="text" id="method" name="method" />
+        <textarea id="args" rows="10" onblur="prettify.call(this);" name="args">{}</textarea>
+        <input type="submit" value="Submit" />
+    </form>
+    <div id="result" name="result"></div>
+</body>
+
+</html>
